@@ -51,7 +51,7 @@ def download_data(link_dict):
         if 'martin' in k:
             continue
         tme = time.strftime('%Y-%m-%d-%H%M')
-        filename = Path.cwd() / 'data' / (''.join([k,  '_', tme, '.csv']))
+        filename = Path.cwd() / 'data' / (''.join([k,  '_', tme, '.xlsx']))
         r = requests.get(v)
 
         with open(filename, 'wb') as csv_file:
