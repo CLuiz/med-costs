@@ -5,6 +5,7 @@ import requests
 from pathlib import Path
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString
+import time
 
 CLINIC_URL = "https://my.clevelandclinic.org/patients/billing-finance/comprehensive-hospital-charges"
 
@@ -24,7 +25,7 @@ def get_links():
     # Create dict of Hospital name, file url. The hospital names are present in the URLS, but I'd rather
     # pull them out now than parse the urls later, as there are some inconsistencies.
 
-    link_dict ={x.text: x.attrs['href']
+    link_dict ={x.text.lower().replace(' ', '_'): x.attrs['href']
             for x in link_html if type(x) != NavigableString}
 
 
@@ -41,7 +42,28 @@ def get_links():
     return link_dict
 
 
+def download_data(link_dict):
+    """ Downloads and writes files to the data directory.
+    """
+
+    for k, v in link_dict.items():
+        # Martin Health requires different download logic.
+        if 'martin' in k:
+            continue
+        tme = time.strftime('%Y-%m-%d-%H%M')
+        filename = Path.cwd() / 'data' / (''.join([k,  '_', tme, '.csv']))
+        r = requests.get(v)
+
+        with open(filename, 'wb') as csv_file:
+            csv_file.write(r.content)
+
+    return None
+
+
 def main():
+    link_dict = get_links()
+    download_data(link_dict)
+
     return get_links()
 
 
