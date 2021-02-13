@@ -7,14 +7,17 @@ from bs4 import BeautifulSoup
 from bs4.element import NavigableString
 import time
 
-CLINIC_URL = "https://my.clevelandclinic.org/patients/billing-finance/comprehensive-hospital-charges"
 
 
-def get_links():
+def get_links(url="https://my.clevelandclinic.org/patients/billing-finance/comprehensive-hospital-charges"):
     """ Get links to all Cleveland Clinic chargmaster docs.
     """
     # Grab html
-    soup = BeautifulSoup(requests.get(CLINIC_URL).text, "html5lib")
+    soup = BeautifulSoup(requests.get(url).text, "html5lib")
+
+    # TODO Martin hospital is throwing an ssl error on request.get. Fix it. For now, grab links from the page directly.
+
+    # martin_url="https://www.martinhealth.org/comprehensive-hospital-charges")
 
     # Grab the list of docs by the container id
 
@@ -31,7 +34,7 @@ def get_links():
 
     # Grab the url prefix from the clinic url to concat to each relative url
 
-    prefix = CLINIC_URL.split('/patients')[0]
+    prefix = url.split('/patients')[0]
 
     # Add url prefix to the relative urls only
 
@@ -40,6 +43,8 @@ def get_links():
             link_dict[k] = ''.join([prefix, v])
 
     return link_dict
+
+
 
 
 def download_data(link_dict):
