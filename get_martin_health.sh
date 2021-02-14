@@ -2,7 +2,7 @@
 
 # Attempting to dowload the chargemasters from the Martin Health hospital of the cleveland clinic
 # with the python requests library or pythons wget package fails with an ssl error.
-# Passing very=False to requests.get() doens't work and the python vesion of wget doens't allow
+# Passing very=False to requests.get() doens't work and the python vesion of wget doesn't allow
 # for the --no-check-certificate option. Long term plan will be to consolidate all downlaods into
 # python, but this will work for now.
 

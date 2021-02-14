@@ -2,6 +2,7 @@
 # of Hospitals, 15 total.
 
 import requests
+from subprocess import call
 from pathlib import Path
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString
@@ -15,7 +16,8 @@ def get_links(url="https://my.clevelandclinic.org/patients/billing-finance/compr
     # Grab html
     soup = BeautifulSoup(requests.get(url).text, "html5lib")
 
-    # TODO Martin hospital is throwing an ssl error on request.get. Fix it. For now, grab links from the page directly.
+    # TODO Martin hospital is throwing an ssl error on request.get. Fix it. For now, links are
+    # hardcoded into the get_martin_health.sh file.
 
     # martin_url="https://www.martinhealth.org/comprehensive-hospital-charges")
 
@@ -50,6 +52,10 @@ def get_links(url="https://my.clevelandclinic.org/patients/billing-finance/compr
 def download_data(link_dict):
     """ Downloads and writes files to the data directory.
     """
+    # Invoke shell script to pull Martin Health info
+    # TODO add error handling and reanming logic to Martin Health files
+    process = call(['/bin/sh', './get_martin_health.sh'])
+
 
     for k, v in link_dict.items():
         # Martin Health requires different download logic.
@@ -59,8 +65,8 @@ def download_data(link_dict):
         filename = Path.cwd() / 'data' / (''.join([k,  '_', tme, '.xlsx']))
         r = requests.get(v)
 
-        with open(filename, 'wb') as csv_file:
-            csv_file.write(r.content)
+        with open(filename, 'wb') as excel_file:
+            excel_file.write(r.content)
 
     return None
 
